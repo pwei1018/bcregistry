@@ -190,9 +190,9 @@
         <v-card-text>
           <p>
             Search for businesses registered in B.C. and request copies of business
-            documents.            
-          </p>  
-          
+            documents.
+          </p>
+
           <ul>
             <li>Search for businesses by name or number.</li>
             <li>Search for firms by their owner.</li>
@@ -221,7 +221,7 @@
         </span>
         <v-card-text>
           <p>
-            Search the BC Assessment database for information about real property in B.C. Here you 
+            Search the BC Assessment database for information about real property in B.C. Here you
             are able to:
           </p>
 
@@ -253,15 +253,15 @@
         </span>
         <v-card-text>
           <p>
-            The Site Registry retains provincial government information on the 
-            environmental condition of land. The Site Registry can be a helpful 
-            resource for anyone interested in purchasing or developing a property. 
+            The Site Registry retains provincial government information on the
+            environmental condition of land. The Site Registry can be a helpful
+            resource for anyone interested in purchasing or developing a property.
             Here you can:
           </p>
 
           <ul>
-            <li>Search the Site Registry to identify properties with environmental records submitted 
-              under Part 4 of B.C.'s Environmental Management Act.</li>            
+            <li>Search the Site Registry to identify properties with environmental records submitted
+              under Part 4 of B.C.'s Environmental Management Act.</li>
           </ul>
 
           <div>
@@ -292,7 +292,7 @@
           <ul>
             <li>Make applications or file any other court documents in any B.C. court registry.</li>
             <li>Browse daily court listings across the province.</li>
-            <li>Search court file information.</li>            
+            <li>Search court file information.</li>
           </ul>
 
           <div>
@@ -452,7 +452,7 @@ img {
 
   .v-btn {
     width: 100%;
-  }  
+  }
 }
 
 .reduced-letter-spacing {
