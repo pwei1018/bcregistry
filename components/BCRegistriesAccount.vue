@@ -33,13 +33,13 @@
 
           <ul>
             <li>Incorporate and manage benefit companies and cooperative associations.</li>
-<<<<<<< HEAD
             <li>Register and manage general partnerships and sole proprietorships
               (including "Doing Business As"  / DBA names).</li>
-=======
+
             <li>Register and manage sole proprietorship, general partnership, and Doing
               Business As (DBA) business entities.</li>
->>>>>>> - changed OneStop to grayed out with a Moved badge (#103)
+            <li>Register and manage general partnerships and sole proprietorships
+              (including "Doing Business As"  / DBA names).</li>
           </ul>
 
           <div>
