@@ -1,0 +1,98 @@
+name: BCREGISTRY UI CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment (dev/test/prod)"
+        required: true
+        default: "dev"
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  APP_NAME: "bcregistry"
+  TAG_NAME: "dev"
+
+jobs:
+  bcregistry-cd-by-push:
+    runs-on: ubuntu-20.04
+
+    if: github.event_name == 'push' && github.repository == 'pwei1018/bcregistry'
+    environment:
+      name: "dev"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Get environment variables from 1password
+      - name: Setup .env file
+        env:
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+          APP_ENV: dev-new
+        run: |
+          op inject -i ./devops/vaults.env -o .env -f
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+          service_account: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      # Build and push image to Google Container Registry
+      - name: Build
+        run: |-
+          gcloud builds submit \
+            --config \
+            --./devops/cloudbuild-cd.yaml
+
+  bcregistry-cd-by-dispatch:
+    runs-on: ubuntu-20.04
+
+    if: github.event_name == 'workflow_dispatch' && github.repository == 'pwei1018/bcregistry'
+    environment:
+      name: "${{ github.event.inputs.environment }}"
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set env by input
+        run: |
+          echo "TAG_NAME=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+
+      # Get environment variables from 1password
+      - name: Setup .env file
+        env:
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+          APP_ENV: dev-new
+        run: |
+          op inject -i ./devops/vaults.env -o .env -f
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+          service_account: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      # Build and push image to Google Container Registry
+      - name: Build
+        run: |-
+          gcloud builds submit \
+            --config \
+            --./devops/cloudbuild-cd.yaml
