@@ -3,7 +3,7 @@ name: BCREGISTRY UI CD
 on:
   push:
     branches:
-      - main
+      - firebase
   workflow_dispatch:
     inputs:
       environment:
