@@ -27,6 +27,11 @@ jobs:
     environment:
       name: "dev"
 
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
       - uses: actions/checkout@v3
 
@@ -67,6 +72,11 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && github.repository == 'pwei1018/bcregistry'
     environment:
       name: "${{ github.event.inputs.environment }}"
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
       - uses: actions/checkout@v2
