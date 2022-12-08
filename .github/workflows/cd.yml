@@ -63,8 +63,7 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --config \
-            --./devops/cloudbuild-cd.yaml
+            --config ./devops/cloudbuild-cd.yaml
 
   bcregistry-cd-by-dispatch:
     runs-on: ubuntu-20.04
