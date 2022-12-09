@@ -10,7 +10,7 @@ on:
         description: "Environment (dev/test/prod)"
         required: true
         default: "dev"
-      tag:
+      tagname:
         description: "Tag name"
         required: false
         default: ""
