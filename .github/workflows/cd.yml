@@ -41,38 +41,19 @@ jobs:
         run: |
           echo "TAG_NAME=test" >> $GITHUB_ENV
 
-      - name: tagcheckout
-        uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        with:
+          releases-only: false  # This repository doesn't use GitHub's "release" feature.
+          prefix: 'dev'  # Other kinds of tags are irrelevant; also limit to major version 7.
+        id: latesttag
 
-      - name: get latest tag
-        id: gettag
-        run: |
-          echo "${{ env.TAG_NAME }}"
-          LATEST_TAG='dev'
-          if [[ "${{ env.TAG_NAME }}" == "test" ]]; then
-            echo "123"
-            git tag
-            echo $(git tag --sort=committerdate | grep dev | tail -1)
-            LATEST_TAG=$(git tag --sort=committerdate | grep dev | tail -1)
-          elif [[ "${{ env.TAG_NAME }}" == "prod" ]]; then
-            echo "456"
-            git tag --sort=committerdate | grep dev | tail -1
-            LATEST_TAG=$(git tag --sort=committerdate | grep test | tail -1)
-          else
-            echo "789"
-          fi
+      - run: echo "Deploy Version at ${{ steps.latesttag.outputs.tag }}"
 
-          echo "$LATEST_TAG"
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
-
-      - name: confirm tag
-        run: |
-          echo ${{ steps.gettag.outputs.LATEST_TAG }}
 
       - name: tagcheckout
         uses: actions/checkout@v3
         with:
-          ref: ${{ steps.gettag.outputs.LATEST_TAG }}
+          ref: ${{ steps.latesttag.outputs.tag  }}
 
       - name: Bump version and push tag
         id: tag_version
