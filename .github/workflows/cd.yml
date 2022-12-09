@@ -44,9 +44,9 @@ jobs:
       - name: get latest tag
         id: gettag
         run: |
-          if [[ ${{ env.TAG_NAME}} == test ]]; then
+          if [[ $TAG_NAME == test ]]; then
             echo "LATEST_TAG=$(git tag --sort=committerdate | grep dev | tail -1)">> $GITHUB_OUTPUT
-          elif [[ ${{ env.TAG_NAME}} == prod ]]; then
+          elif [[ $TAG_NAME == prod ]]; then
             echo "LATEST_TAG=$(git tag --sort=committerdate | grep test | tail -1)">> $GITHUB_OUTPUT
           else
             echo "LATEST_TAG=" >> $GITHUB_OUTPUT
@@ -60,6 +60,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ steps.gettag.outputs.LATEST_TAG }}
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: ${{ env.TAG_NAME }}.
 
   bcregistry-cd-by-dispatch:
     runs-on: ubuntu-20.04
