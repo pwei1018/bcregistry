@@ -54,10 +54,7 @@ jobs:
                     ref: 'refs/tags/dev',
                     sha: context.sha
                   })
-                }
               }
-
-
 
   bcregistry-cd-by-dispatch:
     runs-on: ubuntu-20.04
