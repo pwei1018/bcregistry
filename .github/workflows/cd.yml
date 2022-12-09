@@ -10,6 +10,10 @@ on:
         description: "Environment (dev/test/prod)"
         required: true
         default: "dev"
+      tag:
+        description: "Tag name"
+        required: false
+        default: ""
 
 defaults:
   run:
@@ -60,8 +64,19 @@ jobs:
         run: |
           echo "TAG_NAME=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
 
-      - name: Get tags
-        run: git fetch --tags origin
+      - name: get latest tag
+        id: gettag
+        run: |
+          echo "LATEST_TAG=$(git tag --sort=committerdate | grep ${{ env.TAG_NAME }} | tail -1)">> $GITHUB_OUTPUT
+
+      - name: confirm tag
+        run: |
+          echo ${{ steps.gettag.outputs.LATEST_TAG }}
+
+      - name: tagcheckout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.gettag.outputs.LATEST_TAG }}
 
       - name: Bump version and push tag
         id: tag_version
