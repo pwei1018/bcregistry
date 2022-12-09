@@ -44,11 +44,11 @@ jobs:
       - name: get latest tag
         id: gettag
         run: |
-          echo $TAG_NAME
+          echo ${{ env.TAG_NAME }}
           LATEST_TAG='dev'
-          if [[ "$TAG_NAME" == "test" ]]; then
+          if [[ ${{ env.TAG_NAME }} == "test" ]]; then
             LATEST_TAG=$(git tag --sort=committerdate | grep dev | tail -1)
-          elif [[ "$TAG_NAME" == "prod" ]]; then
+          elif [[ ${{ env.TAG_NAME }} == "prod" ]]; then
             LATEST_TAG=$(git tag --sort=committerdate | grep test | tail -1)
           fi
 
