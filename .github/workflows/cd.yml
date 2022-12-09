@@ -41,6 +41,9 @@ jobs:
         run: |
           echo "TAG_NAME=test" >> $GITHUB_ENV
 
+      - name: tagcheckout
+        uses: actions/checkout@v3
+
       - name: get latest tag
         id: gettag
         run: |
@@ -53,7 +56,7 @@ jobs:
           fi
 
           echo "$LATEST_TAG"
-          echo "$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_OUTPUT
 
       - name: confirm tag
         run: |
