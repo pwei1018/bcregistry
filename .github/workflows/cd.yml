@@ -51,6 +51,7 @@ jobs:
           LATEST_TAG='dev'
           if [[ "${{ env.TAG_NAME }}" == "test" ]]; then
             echo "123"
+            git status
             echo $(git tag --sort=committerdate | grep dev | tail -1)
             LATEST_TAG=$(git tag --sort=committerdate | grep dev | tail -1)
           elif [[ "${{ env.TAG_NAME }}" == "prod" ]]; then
