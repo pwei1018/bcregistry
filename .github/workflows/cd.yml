@@ -63,7 +63,6 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --project=yfthig-dev \
             --config ./devops/cloudbuild-cd.yaml
 
   bcregistry-cd-by-dispatch:
