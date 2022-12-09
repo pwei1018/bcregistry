@@ -41,9 +41,11 @@ jobs:
         run: |
           echo "TAG_NAME=prod" >> $GITHUB_ENV
 
-          if [ "${{ env.TAG_NAME}}" == "test" ] then
+          if [ "${{ env.TAG_NAME}}" = "test" ]
+          then
             echo "TAG_PREFIX=dev" >> $GITHUB_ENV
-          elif [ "${{ env.TAG_NAME}}" == "prod" ] then
+          elif [ "${{ env.TAG_NAME}}" = "prod" ]
+          then
             echo "TAG_PREFIX=test" >> $GITHUB_ENV
           else
             echo "TAG_PREFIX=dev" >> $GITHUB_ENV
