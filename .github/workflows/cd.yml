@@ -29,7 +29,7 @@ jobs:
 
     if: github.event_name == 'push' && github.repository == 'pwei1018/bcregistry'
     environment:
-      name: "dev"
+      name: "test"
 
     # Add "id-token" with the intended permissions.
     permissions:
@@ -37,14 +37,29 @@ jobs:
       id-token: 'write'
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Set env by input
+        run: |
+          echo "TAG_NAME=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
 
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
+      - name: get latest tag
+        id: gettag
+        run: |
+          if [[ ${{ env.TAG_NAME}} == test ]]; then
+            echo "LATEST_TAG=$(git tag --sort=committerdate | grep dev | tail -1)">> $GITHUB_OUTPUT
+          elif [[ ${{ env.TAG_NAME}} == prod ]]; then
+            echo "LATEST_TAG=$(git tag --sort=committerdate | grep test | tail -1)">> $GITHUB_OUTPUT
+          else
+            echo "LATEST_TAG=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: confirm tag
+        run: |
+          echo ${{ steps.gettag.outputs.LATEST_TAG }}
+
+      - name: tagcheckout
+        uses: actions/checkout@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: dev.
+          ref: ${{ steps.gettag.outputs.LATEST_TAG }}
 
   bcregistry-cd-by-dispatch:
     runs-on: ubuntu-20.04
@@ -59,7 +74,6 @@ jobs:
       id-token: 'write'
 
     steps:
-      - uses: actions/checkout@v3
       - name: Set env by input
         run: |
           echo "TAG_NAME=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
