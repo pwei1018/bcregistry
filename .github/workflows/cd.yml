@@ -39,12 +39,25 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/dev',
-              sha: context.sha
-            })
+              try {
+                  github.rest.git.createRef({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: 'refs/tags/dev',
+                    sha: context.sha
+                  })
+              }
+              catch {
+                  github.rest.git.updateRef({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: 'refs/tags/dev',
+                    sha: context.sha
+                  })
+                }
+              }
+
+
 
   bcregistry-cd-by-dispatch:
     runs-on: ubuntu-20.04
