@@ -29,7 +29,7 @@ jobs:
 
     if: github.event_name == 'push' && github.repository == 'pwei1018/bcregistry'
     environment:
-      name: "test"
+      name: "prod"
 
     # Add "id-token" with the intended permissions.
     permissions:
@@ -39,13 +39,19 @@ jobs:
     steps:
       - name: Set env by input
         run: |
-          echo "TAG_NAME=test" >> $GITHUB_ENV
+          echo "TAG_NAME=prod" >> $GITHUB_ENV
+          echo "TAG_PREFIX=${{ env.TAG_NAME}}" >> $GITHUB_ENV
+          if [[ ${{ env.TAG_NAME}}= "test" ]]; then
+            echo "TAG_PREFIX=dev" >> $GITHUB_ENV
+          elsif [[ ${{ env.TAG_NAME}}= "prod" ]]; then
+            echo "TAG_PREFIX=test" >> $GITHUB_ENV
+          fi
 
       - uses: oprypin/find-latest-tag@v1
         with:
           repository: pwei1018/bcregistry
-          releases-only: false  # This repository doesn't use GitHub's "release" feature.
-          prefix: 'dev'  # Other kinds of tags are irrelevant; also limit to major version 7.
+          releases-only: false
+          prefix: ${{ env.TAG_PREFIX}}
         id: latesttag
 
       - run: echo "Deploy Version at ${{ steps.latesttag.outputs.tag }}"
