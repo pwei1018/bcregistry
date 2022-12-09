@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Set env by input
         run: |
-          echo "TAG_NAME=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          echo "TAG_NAME=test" >> $GITHUB_ENV
 
       - name: get latest tag
         id: gettag
