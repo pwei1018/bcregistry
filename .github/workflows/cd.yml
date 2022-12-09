@@ -43,6 +43,7 @@ jobs:
 
       - uses: oprypin/find-latest-tag@v1
         with:
+          repository: pwei1018/bcregistry
           releases-only: false  # This repository doesn't use GitHub's "release" feature.
           prefix: 'dev'  # Other kinds of tags are irrelevant; also limit to major version 7.
         id: latesttag
