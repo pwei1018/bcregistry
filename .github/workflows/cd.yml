@@ -44,9 +44,10 @@ jobs:
       - name: get latest tag
         id: gettag
         run: |
-          if [[ $TAG_NAME == 'test' ]]; then
+          echo $TAG_NAME
+          if [[ $TAG_NAME == "test" ]]; then
             echo "LATEST_TAG=$(git tag --sort=committerdate | grep dev | tail -1)">> $GITHUB_OUTPUT
-          elif [[ $TAG_NAME == 'prod' ]]; then
+          elif [[ $TAG_NAME == "prod" ]]; then
             echo "LATEST_TAG=$(git tag --sort=committerdate | grep test | tail -1)">> $GITHUB_OUTPUT
           else
             echo "LATEST_TAG=" >> $GITHUB_OUTPUT
