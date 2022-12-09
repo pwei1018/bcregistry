@@ -39,12 +39,13 @@ jobs:
     steps:
       - name: Set env by input
         run: |
-          echo "TAG_NAME=prod" >> $GITHUB_ENV
+          TAG_NAME=prod
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
-          if [ "${{ env.TAG_NAME}}" = "test" ]
+          if [ "$TAG_NAME" = "test" ]
           then
             echo "TAG_PREFIX=dev" >> $GITHUB_ENV
-          elif [ "${{ env.TAG_NAME}}" = "prod" ]
+          elif [ "$TAG_NAME" = "prod" ]
           then
             echo "TAG_PREFIX=test" >> $GITHUB_ENV
           else
