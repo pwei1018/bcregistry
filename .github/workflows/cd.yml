@@ -40,11 +40,13 @@ jobs:
       - name: Set env by input
         run: |
           echo "TAG_NAME=prod" >> $GITHUB_ENV
-          echo "TAG_PREFIX=${{ env.TAG_NAME}}" >> $GITHUB_ENV
-          if [[ "${{ env.TAG_NAME}}" == "test" ]]; then
+
+          if [ "${{ env.TAG_NAME}}" == "test" ] then
             echo "TAG_PREFIX=dev" >> $GITHUB_ENV
-          elsif [[ "${{ env.TAG_NAME}}" == "prod" ]]; then
+          elsif [ "${{ env.TAG_NAME}}" == "prod" ] then
             echo "TAG_PREFIX=test" >> $GITHUB_ENV
+          else
+            echo "TAG_PREFIX=" >> $GITHUB_ENV
           fi
 
       - uses: oprypin/find-latest-tag@v1
