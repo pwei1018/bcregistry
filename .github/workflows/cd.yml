@@ -3,7 +3,7 @@ name: BCREGISTRY UI CD
 on:
   push:
     branches:
-      - firebase
+      - main
   workflow_dispatch:
     inputs:
       environment:
@@ -29,7 +29,7 @@ jobs:
 
     if: github.event_name == 'push' && github.repository == 'pwei1018/bcregistry'
     environment:
-      name: "prod"
+      name: "dev"
 
     # Add "id-token" with the intended permissions.
     permissions:
@@ -37,46 +37,18 @@ jobs:
       id-token: 'write'
 
     steps:
-      - name: Set env by input
-        run: |
-          TAG_NAME=prod
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
 
-          if [ "$TAG_NAME" = "test" ]
-          then
-            echo "TAG_PREFIX=dev" >> $GITHUB_ENV
-          elif [ "$TAG_NAME" = "prod" ]
-          then
-            echo "TAG_PREFIX=test" >> $GITHUB_ENV
-          else
-            echo "TAG_PREFIX=dev" >> $GITHUB_ENV
-          fi
-
-      - uses: oprypin/find-latest-tag@v1
-        with:
-          repository: pwei1018/bcregistry
-          releases-only: false
-          prefix: ${{ env.TAG_PREFIX}}
-        id: latesttag
-
-      - run: echo "Deploy Version at ${{ steps.latesttag.outputs.tag }}"
-
-
-      - name: tagcheckout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.latesttag.outputs.tag  }}
-
-      - name: Get current date
-        id: date
-        run: echo "DATETIME=`date +'%Y%m%d%H'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
+      - name: Set custom tag
+        id: customtag
+        run: echo "tag=`date +'%Y%m%d%H'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
 
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.date.outputs.DATETIME }}
+          custom_tag: ${{ steps.customtag.outputs.tag }}
           tag_prefix: ${{ env.TAG_NAME }}.
 
   bcregistry-cd-by-dispatch:
@@ -96,23 +68,41 @@ jobs:
         run: |
           echo "TAG_NAME=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
 
-      - name: get latest tag
-        id: gettag
+      - name: Set env by input
+        id: tagprefix
         run: |
-          echo "LATEST_TAG=$(git tag --sort=committerdate | grep ${{ env.TAG_NAME }} | tail -1)">> $GITHUB_OUTPUT
+          if [ "${{ env.TAG_NAME }}" = "test" ]
+          then
+            echo "TAG_PREFIX=dev" >> $GITHUB_OUTPUT
+          elif [ "${{ env.TAG_NAME }}" = "prod" ]
+          then
+            echo "TAG_PREFIX=test" >> $GITHUB_OUTPUT
+          else
+            echo "TAG_PREFIX=dev" >> $GITHUB_OUTPUT
+          fi
 
-      - name: confirm tag
-        run: |
-          echo ${{ steps.gettag.outputs.LATEST_TAG }}
+      - uses: oprypin/find-latest-tag@v1
+        id: latesttag
+        with:
+          repository: pwei1018/bcregistry
+          releases-only: false
+          prefix: ${{ steps.tagprefix.outputs.TAG_PREFIX}}
+
+      - run: echo "Deploy Version at ${{ steps.latesttag.outputs.tag }}"
 
       - name: tagcheckout
         uses: actions/checkout@v3
         with:
-          ref: ${{ steps.gettag.outputs.LATEST_TAG }}
+          ref: ${{ steps.latesttag.outputs.tag  }}
+
+      - name: Set custom tag
+        id: customtag
+        run: echo "tag=`date +'%Y%m%d%H'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
 
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.customtag.outputs.tag }}
           tag_prefix: ${{ env.TAG_NAME }}.
