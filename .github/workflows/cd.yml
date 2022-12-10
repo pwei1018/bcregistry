@@ -69,14 +69,14 @@ jobs:
 
       - name: Get current date
         id: date
-        run: echo "DATETIME=`date +'%Y%m%d%H%M%S'`" >> $GITHUB_OUTPUT
+        run: echo "DATETIME=`date +'%Y%m%d%H'`" >> $GITHUB_OUTPUT
 
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.date.outputs.DATETIME }}.${{ github.sha }}
+          custom_tag: ${{ steps.date.outputs.DATETIME }}.${{ github.head_ref}}
           tag_prefix: ${{ env.TAG_NAME }}.
 
   bcregistry-cd-by-dispatch:
