@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "test-bcros-home",
     "public": "dist",
     "ignore": [
       "firebase.json",
