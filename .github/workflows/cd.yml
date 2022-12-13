@@ -105,6 +105,8 @@ jobs:
           ref: ${{ github.event.inputs.tagname }}
 
       - run: |
+          pwd
+          ls -l
           echo "`git log -1 --format='%h'`"
 
       - name: Set git tag format - datetime.short-sha
