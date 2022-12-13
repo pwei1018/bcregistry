@@ -11,7 +11,7 @@ on:
         required: true
         default: "dev"
       tagname:
-        description: "Tag version"
+        description: "Specify the version (git tag) to deploy"
         required: false
         default: ""
 
@@ -42,7 +42,7 @@ jobs:
 
       - name: Set git tag format - datetime.short-sha
         id: customtag
-        run: echo "tag=`date +'%Y%m%d%H'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
+        run: echo "tag=`date +'%Y%m%d%H%M'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
 
       - name: Add git tag
         uses: mathieudutour/github-tag-action@v6.1
@@ -104,9 +104,12 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tagname }}
 
+      - run: |
+          echo "`git rev-parse --short ${{ github.sha }}`"
+
       - name: Set git tag format - datetime.short-sha
         id: customtag
-        run: echo "tag=`date +'%Y%m%d%H'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
+        run: echo "tag=`date +'%Y%m%d%H%M'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
 
       - name: Add git tag
         uses: mathieudutour/github-tag-action@v6.1
