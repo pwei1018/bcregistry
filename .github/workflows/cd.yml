@@ -92,16 +92,17 @@ jobs:
           releases-only: false
           prefix: ${{ steps.tagprefix.outputs.TAG_PREFIX}}
 
-      - name: Get lastest git tag by input
-        if: github.event.inputs.tagname != null
-        id: latesttag
-        run:
-          echo "TAG_PREFIX=${{ github.event.inputs.tagname }}" >> $GITHUB_OUTPUT
-
       - name: Checout out the code by the git tag
+        if: github.event.inputs.tagname == null
         uses: actions/checkout@v3
         with:
           ref: ${{ steps.latesttag.outputs.tag  }}
+
+      - name: Checout out the code by the input git tag
+        if: github.event.inputs.tagname != null
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.tagname }}
 
       - name: Set git tag format - datetime.short-sha
         id: customtag
