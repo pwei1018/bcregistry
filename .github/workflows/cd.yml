@@ -105,11 +105,11 @@ jobs:
           ref: ${{ github.event.inputs.tagname }}
 
       - run: |
-          echo "`git rev-parse --short ${{ github.sha }}`"
+          echo "`git log -1 --format='%h'`"
 
       - name: Set git tag format - datetime.short-sha
         id: customtag
-        run: echo "tag=`date +'%Y%m%d%H%M'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
+        run: echo "tag=`date +'%Y%m%d%H%M'`.`git log -1 --format='%h'`" >> $GITHUB_OUTPUT
 
       - name: Add git tag
         uses: mathieudutour/github-tag-action@v6.1
