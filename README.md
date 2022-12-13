@@ -1,3 +1,6 @@
+![License](https://img.shields.io/badge/LICENSE-Apache%202-green)
+![Latest Deployment](https://img.shields.io/github/v/tag/pwei1018/bcregistry?label=Latest-Deployment)
+
 # BCRegistry
 
 This project requires Node v16.x.x (npm v8.x.x). You can use Node Version manager (nvm) to manage several versions of node...
@@ -7,7 +10,7 @@ nvm install 16
 ```
 ...and then you can do `npm install` etc as below.
 
-You should also create an `.env` file and copy everything from `.env.example` into `.env` to properly preview the 
+You should also create an `.env` file and copy everything from `.env.example` into `.env` to properly preview the
 static project.
 
 ## Build Setup
