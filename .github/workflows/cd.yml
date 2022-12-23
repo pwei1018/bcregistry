@@ -40,6 +40,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Load secret
+        id: op-load-secret
+        uses: 1password/load-secrets-action@v1
+        env:
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+          APP_ENV: dev-new
+        run: |
+          op inject -i ./devops/vaults.env -o .env -f
+
       - name: Set git tag format - datetime.short-sha
         id: customtag
         run: echo "tag=`date +'%Y%m%d%H%M'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
