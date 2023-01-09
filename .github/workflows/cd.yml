@@ -40,17 +40,35 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configure 1Password Connect
-        uses: 1password/load-secrets-action/configure@v1
-        with:
-          connect-host: ${{ secrets.OP_CONNECT_URL }}
-          connect-token: ${{ secrets.OP_CONNECT_TOKEN }}
-
-      - name: Load secret
+      # Get environment variables from 1password
+      - name: Setup .env file
         env:
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
           APP_ENV: dev-new
         run: |
+          curl -sSfo op.zip \
+              https://cache.agilebits.com/dist/1P/op2/pkg/v2.0.0/op_linux_amd64_v2.0.0.zip \
+              && unzip -od /usr/local/bin/ op.zip \
+              && rm op.zip ;\
           op inject -i ./devops/vaults.env -o .env -f
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+          service_account: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      # Build and push image to Google Container Registry
+      - name: Build
+        run: |-
+          gcloud builds submit \
+            --config ./devops/cloudbuild-cd.yaml
 
       - name: Set git tag format - datetime.short-sha
         id: customtag
@@ -116,10 +134,35 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tagname }}
 
-      - run: |
-          pwd
-          ls -l
-          echo "`git log -1 --format='%h'`"
+      # Get environment variables from 1password
+      - name: Setup .env file
+        env:
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+          APP_ENV: dev-new
+        run: |
+          curl -sSfo op.zip \
+              https://cache.agilebits.com/dist/1P/op2/pkg/v2.0.0/op_linux_amd64_v2.0.0.zip \
+              && unzip -od /usr/local/bin/ op.zip \
+              && rm op.zip ;\
+          op inject -i ./devops/vaults.env -o .env -f
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+          service_account: ${{ secrets.GCLOUD_SERVICE_ACCOUNT }}
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      # Build and push image to Google Container Registry
+      - name: Build
+        run: |-
+          gcloud builds submit \
+            --config ./devops/cloudbuild-cd.yaml
 
       - name: Set git tag format - datetime.short-sha
         id: customtag
