@@ -1,13 +1,13 @@
 steps:
   # install / setup ci
-  - name: $PROJECT_NODE_VERSION
+  - name: $DEPLOYMENT_NODE_VERSION
     entrypoint: npm
     args: ['install']
 
   #
   # Generate the statis site
   #
-  - name: $PROJECT_NODE_VERSION
+  - name: $DEPLOYMENT_NODE_VERSION
     entrypoint: npm
     args: ['--openssl-legacy-provider', 'run', 'generate']
 
@@ -15,9 +15,15 @@ steps:
   # Deploy to firebase channel, using the PR #
   # store log to /workspace to get the channel URL
   #
-  - name: gcr.io/$PROJECT_ID/firebase
+  - name: gcr.io/$_DEPLOYMENT_PROJECT/firebase
     entrypoint: bash
-    args: ['-c', 'firebase deploy --project=$PROJECT_ID--config=firebase.json --only hosting:$PROJECT_HOST_NAME']
+    args: ['-c', 'firebase deploy --project=$_DEPLOYMENT_PROJECT--config=firebase.json --only hosting:$DEPLOYMENT_HOST_NAME']
+
+substitutions:
+    _DEPLOYMENT_PROJECT: '${_DEPLOYMENT_PROJECT}'
+    _DEPLOYMENT_NODE_VERSION: '${ _DEPLOYMENT_NODE_VERSION" }'
+    _DEPLOYMENT_HOST_NAME: '${ _DEPLOYMENT_HOST_NAME }''
+
 
 options:
   logging: CLOUD_LOGGING_ONLY
