@@ -68,6 +68,9 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
+            --substitutions _PROJECT_NODE_VERSION=${{ secrets.NODE_VERSION }}, \
+                            _PROJECT_ID=${{ secrets.PROJECT_ID }}, \
+                            _PROJECT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       - name: Set git tag format - datetime.short-sha
@@ -162,6 +165,9 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
+            --substitutions _PROJECT_NODE_VERSION=${{ secrets.NODE_VERSION }}, \
+                            _PROJECT_ID=${{ secrets.PROJECT_ID }}, \
+                            _PROJECT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       - name: Set git tag format - datetime.short-sha

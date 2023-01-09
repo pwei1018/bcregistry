@@ -1,13 +1,13 @@
 steps:
   # install / setup ci
-  - name: node:16.14.2
+  - name: $PROJECT_NODE_VERSION
     entrypoint: npm
     args: ['install']
 
   #
   # Generate the statis site
   #
-  - name: node:16.14.2
+  - name: $PROJECT_NODE_VERSION
     entrypoint: npm
     args: ['--openssl-legacy-provider', 'run', 'generate']
 
@@ -15,9 +15,9 @@ steps:
   # Deploy to firebase channel, using the PR #
   # store log to /workspace to get the channel URL
   #
-  - name: gcr.io/yfthig-dev/firebase
+  - name: gcr.io/$PROJECT_ID/firebase
     entrypoint: bash
-    args: ['-c', 'firebase deploy --project=yfthig-dev --config=firebase.json --only hosting:test-bcros-home']
+    args: ['-c', 'firebase deploy --project=$PROJECT_ID--config=firebase.json --only hosting:$PROJECT_HOST_NAME']
 
 options:
   logging: CLOUD_LOGGING_ONLY
