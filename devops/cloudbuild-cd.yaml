@@ -1,13 +1,13 @@
 steps:
   # install / setup ci
-  - name: $DEPLOYMENT_NODE_VERSION
+  - name: node:$DEPLOYMENT_NODE_VERSION
     entrypoint: npm
     args: ['install']
 
   #
   # Generate the statis site
   #
-  - name: $DEPLOYMENT_NODE_VERSION
+  - name: node:$DEPLOYMENT_NODE_VERSION
     entrypoint: npm
     args: ['--openssl-legacy-provider', 'run', 'generate']
 
