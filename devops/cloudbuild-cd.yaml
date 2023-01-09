@@ -17,7 +17,7 @@ steps:
   #
   - name: gcr.io/$_DEPLOYMENT_PROJECT/firebase
     entrypoint: bash
-    args: ['-c', 'firebase deploy --project=$_DEPLOYMENT_PROJECT--config=firebase.json --only hosting:$_DEPLOYMENT_HOST_NAME']
+    args: ['-c', 'firebase deploy --project=$_DEPLOYMENT_PROJECT --config=firebase.json --only hosting:$_DEPLOYMENT_HOST_NAME']
 
 substitutions:
     _DEPLOYMENT_PROJECT: '${_DEPLOYMENT_PROJECT}'
