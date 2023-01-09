@@ -68,8 +68,8 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _PROJECT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }}, \
-                            _PROJECT_ID=${{ secrets.PROJECT_ID }}, \
+            --substitutions _PROJECT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},\
+                            _PROJECT_ID=${{ secrets.PROJECT_ID }},\
                             _PROJECT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
@@ -165,8 +165,8 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _PROJECT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }}, \
-                            _PROJECT_ID=${{ secrets.PROJECT_ID }}, \
+            --substitutions _PROJECT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},\
+                            _PROJECT_ID=${{ secrets.PROJECT_ID }},\
                             _PROJECT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
