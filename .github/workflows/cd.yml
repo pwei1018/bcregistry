@@ -68,9 +68,10 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
+      # Bump version and push tag
       - name: Set git tag format - datetime.short-sha
         id: customtag
         run: echo "tag=`date +'%Y%m%d%H%M'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
@@ -163,9 +164,10 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
+      # Bump version and push tag
       - name: Set git tag format - datetime.short-sha
         id: customtag
         run: echo "tag=`date +'%Y%m%d%H%M'`.`git log -1 --format='%h'`" >> $GITHUB_OUTPUT
