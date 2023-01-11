@@ -1,8 +1,9 @@
 {
   "hosting":
     {
+      "site": "test-bcros-home",
       "public": "dist",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "ignore": ["**/devops/**", "**/.*", "**/node_modules/**"],
       "headers" : [ {
         "source": "**",
         "headers" : [
