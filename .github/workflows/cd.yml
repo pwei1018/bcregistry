@@ -68,7 +68,7 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ env.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       # Bump version and push tag
@@ -164,7 +164,7 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ secrets.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ env.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ secrets.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ secrets.PROJECT_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       # Bump version and push tag
