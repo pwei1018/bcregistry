@@ -85,12 +85,13 @@ jobs:
 
       # Build and push image to Google Container Registry
       - name: Build
+        env:
+          NODE_VERSION : ${{ steps.op-load-secret.outputs.PROJECT_NODE_VERSION }}
+          PROJECT_ID: ${{ steps.op-load-secret.outputs.PROJECT_ID }}
+          HOST_NAME: ${{ steps.op-load-secret.outputs.FIREBASE_HOST_NAME }}
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},\
-            _DEPLOYMENT_NODE_VERSION=${{ steps.op-load-secret.outputs.PROJECT_NODE_VERSION }},\
-            _DEPLOYMENT_PROJECT=${{ steps.op-load-secret.outputs.PROJECT_ID }},
-            _DEPLOYMENT_HOST_NAME=${{ steps.op-load-secret.outputs.FIREBASE_HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ env.NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ env.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ env.HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       # Bump version and push tag
