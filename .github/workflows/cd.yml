@@ -49,6 +49,8 @@ jobs:
 
       - name: Load secret
         uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
         env:
           PROJECT_ID: op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID
           FIREBASE_HOST_NAME: op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME
@@ -161,6 +163,8 @@ jobs:
 
       - name: Load secret
         uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
         env:
           PROJECT_ID: op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID
           FIREBASE_HOST_NAME: op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME
