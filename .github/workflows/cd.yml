@@ -53,11 +53,11 @@ jobs:
         with:
           export-env: false
         env:
-          PROJECT_ID: "'op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID'"
-          FIREBASE_HOST_NAME: "'op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME'"
-          WORKLOAD_IDENTIFY_POOLS_PROVIDER: "'op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER'"
-          GCP_SERVICE_ACCOUNT: "'op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT'"
-          PROJECT_NODE_VERSION: "'op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_NODE_VERSION'"
+          PROJECT_ID: "op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID"
+          FIREBASE_HOST_NAME: "op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME"
+          WORKLOAD_IDENTIFY_POOLS_PROVIDER: "op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER"
+          GCP_SERVICE_ACCOUNT: "op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT"
+          PROJECT_NODE_VERSION: "op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_NODE_VERSION"
 
       # Get environment variables from 1password
       - name: Setup .env file
