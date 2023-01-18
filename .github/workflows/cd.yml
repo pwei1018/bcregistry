@@ -48,9 +48,10 @@ jobs:
           connect-token: ${{ secrets.OP_CONNECT_TOKEN }}
 
       - name: Load secret
+        id: op-load-secret
         uses: 1password/load-secrets-action@v1
         with:
-          export-env: true
+          export-env: false
         env:
           PROJECT_ID: op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID
           FIREBASE_HOST_NAME: op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME
@@ -75,8 +76,8 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
-          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ steps.op-load-secret.outputs.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+          service_account: ${{ steps.op-load-secret.outputs.GCP_SERVICE_ACCOUNT }}
 
       # Setup gcloud CLI
       - name: Set up Cloud SDK
@@ -86,7 +87,7 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ env.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ env.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ env.FIREBASE_HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ steps.op-load-secret.outputs.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ steps.op-load-secret.outputs.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ steps.op-load-secret.outputs.FIREBASE_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       # Bump version and push tag
@@ -162,9 +163,10 @@ jobs:
           connect-token: ${{ secrets.OP_CONNECT_TOKEN }}
 
       - name: Load secret
+        id: op-load-secret
         uses: 1password/load-secrets-action@v1
         with:
-          export-env: true
+          export-env: false
         env:
           PROJECT_ID: op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID
           FIREBASE_HOST_NAME: op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME
@@ -200,7 +202,7 @@ jobs:
       - name: Build
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ env.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ env.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ env.FIREBASE_HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ steps.op-load-secret.outputs.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ steps.op-load-secret.outputs.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ steps.op-load-secret.outputs.FIREBASE_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       # Bump version and push tag
