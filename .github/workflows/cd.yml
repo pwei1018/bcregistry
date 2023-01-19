@@ -40,25 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Get CD environment variables from 1password
-      - name: Configure 1Password Connect
-        uses: 1password/load-secrets-action/configure@v1
-        with:
-          connect-host: ${{ secrets.OP_CONNECT_URL }}
-          connect-token: ${{ secrets.OP_CONNECT_TOKEN }}
-
-      - name: Load secret
-        id: op-load-secret
-        uses: 1password/load-secrets-action@v1
-        with:
-          export-env: false
-        env:
-          PROJECT_ID: "op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID"
-          FIREBASE_HOST_NAME: "op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME"
-          WORKLOAD_IDENTIFY_POOLS_PROVIDER: "op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER"
-          GCP_SERVICE_ACCOUNT: "op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT"
-          PROJECT_NODE_VERSION: "op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_NODE_VERSION"
-
       # Get environment variables from 1password
       - name: Setup .env file
         env:
@@ -71,13 +52,18 @@ jobs:
               && unzip -od /usr/local/bin/ op.zip \
               && rm op.zip ;\
           op inject -i ./devops/vaults.env -o .env -f
+          echo "PROJECT_ID=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_ID`" >> $GITHUB_ENV
+          echo "FIREBASE_HOST_NAME=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME`" >> $GITHUB_ENV
+          echo "WORKLOAD_IDENTIFY_POOLS_PROVIDER: "op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER" >> $GITHUB_ENV
+          echo "GCP_SERVICE_ACCOUNT=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT`" >> $GITHUB_ENV
+          echo "PROJECT_NODE_VERSION=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/PROJECT_NODE_VERSION`" >> $GITHUB_ENV
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: ${{ steps.op-load-secret.outputs.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
-          service_account: ${{ steps.op-load-secret.outputs.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
 
       # Setup gcloud CLI
       - name: Set up Cloud SDK
@@ -85,13 +71,9 @@ jobs:
 
       # Build and push image to Google Container Registry
       - name: Build
-        env:
-          NODE_VERSION : ${{ steps.op-load-secret.outputs.PROJECT_NODE_VERSION }}
-          PROJECT_ID: ${{ steps.op-load-secret.outputs.PROJECT_ID }}
-          HOST_NAME: ${{ steps.op-load-secret.outputs.FIREBASE_HOST_NAME }}
         run: |-
           gcloud builds submit \
-            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ env.NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ env.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ env.HOST_NAME }} \
+            --substitutions _DEPLOYMENT_ENVIRONMENT=${{ env.TAG_NAME }},_DEPLOYMENT_NODE_VERSION=${{ env.PROJECT_NODE_VERSION }},_DEPLOYMENT_PROJECT=${{ env.PROJECT_ID }},_DEPLOYMENT_HOST_NAME=${{ env.FIREBASE_HOST_NAME }} \
             --config ./devops/cloudbuild-cd.yaml
 
       # Bump version and push tag
