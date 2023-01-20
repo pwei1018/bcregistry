@@ -52,10 +52,22 @@ jobs:
               && unzip -od /usr/local/bin/ op.zip \
               && rm op.zip ;\
           op inject -i ./devops/vaults.env -o .env -f
-          echo "NODE_VERSION=`op read -n op://CD/app-version/NODE_VERSION`" >> $GITHUB_ENV
-          echo "FIREBASE_HOST_NAME=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME`" >> $GITHUB_ENV
-          echo "WORKLOAD_IDENTIFY_POOLS_PROVIDER=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER`" >> $GITHUB_ENV
-          echo "GCP_SERVICE_ACCOUNT=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT`" >> $GITHUB_ENV
+
+          NODE_VERSION=$(op read -n op://CD/app-version/NODE_VERSION)
+          echo "::add-mask::$NODE_VERSION"
+          echo NODE_VERSION=$NODE_VERSION >> $GITHUB_ENV
+
+          FIREBASE_HOST_NAME=$(op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME)
+          echo "::add-mask::$FIREBASE_HOST_NAME"
+          echo FIREBASE_HOST_NAME=$FIREBASE_HOST_NAME >> $GITHUB_ENV
+
+          WORKLOAD_IDENTIFY_POOLS_PROVIDER=$(op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER)
+          echo "::add-mask::$WORKLOAD_IDENTIFY_POOLS_PROVIDER"
+          echo WORKLOAD_IDENTIFY_POOLS_PROVIDER=$WORKLOAD_IDENTIFY_POOLS_PROVIDER >> $GITHUB_ENV
+
+          GCP_SERVICE_ACCOUNT=$(op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT)
+          echo "::add-mask::$GCP_SERVICE_ACCOUNT"
+          echo GCP_SERVICE_ACCOUNT=$GCP_SERVICE_ACCOUNT >> $GITHUB_ENV
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
@@ -152,10 +164,21 @@ jobs:
               && unzip -od /usr/local/bin/ op.zip \
               && rm op.zip ;\
           op inject -i ./devops/vaults.env -o .env -f
-          echo "NODE_VERSION=`op read -n op://CD/app-version/NODE_VERSION`" >> $GITHUB_ENV
-          echo "FIREBASE_HOST_NAME=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME`" >> $GITHUB_ENV
-          echo "WORKLOAD_IDENTIFY_POOLS_PROVIDER=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER`" >> $GITHUB_ENV
-          echo "GCP_SERVICE_ACCOUNT=`op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT`" >> $GITHUB_ENV
+          NODE_VERSION=$(op read -n op://CD/app-version/NODE_VERSION)
+          echo "::add-mask::$NODE_VERSION"
+          echo NODE_VERSION=$NODE_VERSION >> $GITHUB_ENV
+
+          FIREBASE_HOST_NAME=$(op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/FIREBASE_HOST_NAME)
+          echo "::add-mask::$FIREBASE_HOST_NAME"
+          echo FIREBASE_HOST_NAME=$FIREBASE_HOST_NAME >> $GITHUB_ENV
+
+          WORKLOAD_IDENTIFY_POOLS_PROVIDER=$(op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/WORKLOAD_IDENTIFY_POOLS_PROVIDER)
+          echo "::add-mask::$WORKLOAD_IDENTIFY_POOLS_PROVIDER"
+          echo WORKLOAD_IDENTIFY_POOLS_PROVIDER=$WORKLOAD_IDENTIFY_POOLS_PROVIDER >> $GITHUB_ENV
+
+          GCP_SERVICE_ACCOUNT=$(op read -n op://CD/${{ env.TAG_NAME }}/bcregistry/GCP_SERVICE_ACCOUNT)
+          echo "::add-mask::$GCP_SERVICE_ACCOUNT"
+          echo GCP_SERVICE_ACCOUNT=$GCP_SERVICE_ACCOUNT >> $GITHUB_ENV
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
