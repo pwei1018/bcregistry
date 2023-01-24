@@ -140,13 +140,13 @@ jobs:
           releases-only: false
           prefix: ${{ steps.tagprefix.outputs.TAG_PREFIX}}
 
-      - name: Checout out the code by the git tag
+      - name: Checkout out the code by the git tag
         if: github.event.inputs.tagname == null
         uses: actions/checkout@v3
         with:
           ref: ${{ steps.latesttag.outputs.tag  }}
 
-      - name: Checout out the code by the input git tag
+      - name: Checkout out the code by the input git tag
         if: github.event.inputs.tagname != null
         uses: actions/checkout@v3
         with:

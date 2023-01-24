@@ -5,7 +5,7 @@ steps:
     args: ['install']
 
   #
-  # Generate the statis site
+  # Generate the static site
   #
   - name: node:$_DEPLOYMENT_NODE_VERSION
     entrypoint: npm
