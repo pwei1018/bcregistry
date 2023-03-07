@@ -39,17 +39,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set custom tag
-        id: customtag
-        run: echo "tag=`date +'%Y%m%d%H'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
-
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.customtag.outputs.tag }}
-          tag_prefix: ${{ env.TAG_NAME }}.
+      # Get environment variables from 1password
+      - name: Setup .env file
+        env:
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+          APP_ENV: ${{ env.TAG_NAME }}
+        run: |
+          curl -sSfo op.zip \
+              https://cache.agilebits.com/dist/1P/op2/pkg/v2.0.0/op_linux_amd64_v2.0.0.zip \
+              && unzip -od /usr/local/bin/ op.zip \
+              && rm op.zip ;\
+          SENTRY=$(op read -n op://sentry/${{ env.TAG_NAME }}/namerequest/SENTRY_DSN)
+          echo "$SENTRY"
 
   bcregistry-cd-by-dispatch:
     runs-on: ubuntu-20.04
@@ -81,28 +83,16 @@ jobs:
             echo "TAG_PREFIX=dev" >> $GITHUB_OUTPUT
           fi
 
-      - uses: oprypin/find-latest-tag@v1
-        id: latesttag
-        with:
-          repository: pwei1018/bcregistry
-          releases-only: false
-          prefix: ${{ steps.tagprefix.outputs.TAG_PREFIX}}
-
-      - run: echo "Deploy Version at ${{ steps.latesttag.outputs.tag }}"
-
-      - name: tagcheckout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.latesttag.outputs.tag  }}
-
-      - name: Set custom tag
-        id: customtag
-        run: echo "tag=`date +'%Y%m%d%H'`.`git rev-parse --short ${{ github.sha }}`" >> $GITHUB_OUTPUT
-
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ steps.customtag.outputs.tag }}
-          tag_prefix: ${{ env.TAG_NAME }}.
+      # Get environment variables from 1password
+      - name: Setup .env file
+        env:
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+          APP_ENV: ${{ env.TAG_NAME }}
+        run: |
+          curl -sSfo op.zip \
+              https://cache.agilebits.com/dist/1P/op2/pkg/v2.0.0/op_linux_amd64_v2.0.0.zip \
+              && unzip -od /usr/local/bin/ op.zip \
+              && rm op.zip ;\
+          SENTRY=$(op read -n op://sentry/${{ env.TAG_NAME }}/namerequest/SENTRY_DSN)
+          echo "$SENTRY"
