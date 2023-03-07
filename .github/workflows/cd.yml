@@ -94,5 +94,5 @@ jobs:
               https://cache.agilebits.com/dist/1P/op2/pkg/v2.0.0/op_linux_amd64_v2.0.0.zip \
               && unzip -od /usr/local/bin/ op.zip \
               && rm op.zip ;\
-          SENTRY_1=$(op read -n op://sentry/${{ env.TAG_NAME }}/namerequest/SENTRY_DSN)
+          SENTRY_1=$(op read -n op://sentry/${{ env.TAG_NAME }}/namerequest/SENTRYDSN)
           echo "$SENTRY_1" 
