@@ -23,7 +23,7 @@ jobs:
   bcregistry-cd:
     runs-on: ubuntu-20.04
 
-  uses: pwei1018/bcregistry-sre/.github/workflows/cicd/ui-cd.yml@reuseable-workflow
+  uses: pwei1018/bcregistry-sre/.github/workflows/cicd/ui-cd.yaml@reuseable-workflow
     with:
       environment: ${{ inputs.environment }}
       tagname: ${{ inputs.tagname }}
