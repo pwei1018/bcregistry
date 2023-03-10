@@ -28,5 +28,5 @@ jobs:
     secrets:
       APP_NAME: bcregistry
       REPO_NAME: pwei1018/bcregistry
-      OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+      OP_CONNECT_URL: ${{ secrets.OP_CONNECT_URL }}
       OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
