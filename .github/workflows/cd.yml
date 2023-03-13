@@ -16,7 +16,7 @@ on:
         - sandbox
         - prod
       tagname:
-        description: "Specify the version (git tag) to deploy"
+        description: "Specify a previous version (git tag) to deploy"
         required: false
         default: ""
 
