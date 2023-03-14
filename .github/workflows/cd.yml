@@ -21,7 +21,7 @@ on:
         default: ""
 
 jobs:
-  bcregistry-cd:
+  bcregistry-ui-cd:
     uses: pwei1018/bcregistry-sre/.github/workflows/ui-cd.yaml@reuseable-workflow
     with:
       environment: ${{ inputs.environment }}
