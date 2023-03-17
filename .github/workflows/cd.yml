@@ -3,7 +3,7 @@ name: BCREGISTRY UI CD
 on:
   push:
     branches:
-      - reuseable-workflow
+      - main
   workflow_dispatch:
     inputs:
       environment:
