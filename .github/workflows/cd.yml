@@ -22,7 +22,7 @@ on:
 
 jobs:
   bcregistry-ui-cd:
-    uses: bcgov/bcregistry-sre/.github/workflows/ui-cd.yaml@reuseable-workflow
+    uses: bcgov/bcregistry-sre/.github/workflows/ui-cd.yaml@main
     with:
       environment: ${{ inputs.environment }}
       tagname: ${{ inputs.tagname }}
