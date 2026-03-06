@@ -280,8 +280,10 @@ onMounted(async () => {
             </span>
           </div>
         </template>
-        <p v-if="ProductCode.BUSINESS == product.name"
-           class="text-sm">
+        <p
+          v-if="ProductCode.BUSINESS == product.name"
+          class="text-sm"
+        >
           {{ t('page.productFees.noteContent') }}
         </p>
         <UTable
