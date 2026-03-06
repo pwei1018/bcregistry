@@ -1,80 +1,92 @@
 <script setup lang="ts">
-const accountStore = useConnectAccountStore()
-const productInfo = useProductInfo()
-const { t } = useI18n()
-const localePath = useLocalePath()
-const { $authApi } = useNuxtApp()
-const { clearLoginRedirectUrl, setLogoutRedirectUrl, kcUser } = useKeycloak()
-const rtc = useRuntimeConfig().public
+const accountStore = useConnectAccountStore();
+const productInfo = useProductInfo();
+const { t } = useI18n();
+const localePath = useLocalePath();
+const { $authApi } = useNuxtApp();
+const { clearLoginRedirectUrl, setLogoutRedirectUrl, kcUser } = useKeycloak();
+const rtc = useRuntimeConfig().public;
 
-const route = useRoute()
+const route = useRoute();
 
 useHead({
-  title: t('page.dashboard.title')
-})
+  title: t("page.dashboard.title"),
+});
 
 definePageMeta({
-  middleware: ['auth', 'dashboard-page']
-})
+  middleware: ["auth", "dashboard-page"],
+});
 
-const isSbcStaff = ref(false)
-const helpHref = 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/'
-  + 'permits-licences/news-updates/modernization-updates/modernization-resources'
+const isSbcStaff = ref(false);
+const helpHref =
+  "https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization-updates/bc-registry-resources";
+
 // Sync URL <-> accountStore.currentAccount.id
-const routeAccountId = Number(route.params.id)
-if (routeAccountId > 0 && Number.isFinite(routeAccountId) && routeAccountId !== accountStore.currentAccount.id) {
-  accountStore.switchCurrentAccount(routeAccountId)
+const routeAccountId = Number(route.params.id);
+if (
+  routeAccountId > 0 &&
+  Number.isFinite(routeAccountId) &&
+  routeAccountId !== accountStore.currentAccount.id
+) {
+  accountStore.switchCurrentAccount(routeAccountId);
 }
 
-watch(() => accountStore.currentAccount.id, (newId) => {
-  if (newId) {
-    window.history.replaceState({}, '', localePath(`/dashboard/${newId}`))
-  }
-}, { immediate: true })
+watch(
+  () => accountStore.currentAccount.id,
+  (newId) => {
+    if (newId) {
+      window.history.replaceState({}, "", localePath(`/dashboard/${newId}`));
+    }
+  },
+  { immediate: true },
+);
 
-const { data: userProducts, status, error } = await useLazyAsyncData(
-  'user-products',
+const {
+  data: userProducts,
+  status,
+  error,
+} = await useLazyAsyncData(
+  "user-products",
   () => productInfo.getActiveUserProducts(),
   {
     watch: [() => accountStore.currentAccount.id],
-    default: () => []
-  }
-)
+    default: () => [],
+  },
+);
 
 onMounted(async () => {
-  clearLoginRedirectUrl()
-  setLogoutRedirectUrl(rtc.baseUrl)
+  clearLoginRedirectUrl();
+  setLogoutRedirectUrl(rtc.baseUrl);
 
   setBreadcrumbs([
-    { to: localePath('/'), label: t('ConnectBreadcrumb.default') },
-    { label: t('page.dashboard.h1') }
-  ])
+    { to: localePath("/"), label: t("ConnectBreadcrumb.default") },
+    { label: t("page.dashboard.h1") },
+  ]);
 
-  if (accountStore.currentAccount.id && kcUser.value.roles.includes('gov_account_user')) {
+  if (
+    accountStore.currentAccount.id &&
+    kcUser.value.roles.includes("gov_account_user")
+  ) {
     try {
-      const org = await $authApi(`/orgs/${accountStore.currentAccount.id}`)
-      if (org && typeof org === 'object' && 'branchName' in org) {
-        const branchName = org.branchName as string
-        isSbcStaff.value = branchName.includes('Service BC')
+      const org = await $authApi(`/orgs/${accountStore.currentAccount.id}`);
+      if (org && typeof org === "object" && "branchName" in org) {
+        const branchName = org.branchName as string;
+        isSbcStaff.value = branchName.includes("Service BC");
       }
     } catch {
-      isSbcStaff.value = false
+      isSbcStaff.value = false;
     }
   }
-})
+});
 </script>
 
 <template>
   <div class="py-8 sm:py-12">
     <h1>
-      {{
-        isSbcStaff
-          ? $t('page.dashboard.staffH1')
-          : $t('page.dashboard.h1')
-      }}
+      {{ isSbcStaff ? $t("page.dashboard.staffH1") : $t("page.dashboard.h1") }}
     </h1>
     <p class="pt-3">
-      {{ $t('page.dashboard.intro') }}
+      {{ $t("page.dashboard.intro") }}
     </p>
     <h2
       id="products-services-title"
@@ -86,30 +98,30 @@ onMounted(async () => {
       />
     </h2>
     <div class="flex flex-col gap-6 lg:flex-row">
-      <DashboardProductCardList
-        :user-products="userProducts"
-        :error
-        :status
-      />
+      <DashboardProductCardList :user-products="userProducts" :error :status />
       <div class="space-y-6">
-        <UCard class="pointer-events-none shadow-none lg:w-72 xl:w-96 2xl:w-[420px]">
+        <UCard
+          class="pointer-events-none shadow-none lg:w-72 xl:w-96 2xl:w-[420px]"
+        >
           <div class="space-y-4">
             <h5 class="font-semibold text-bcGovColor-darkGray">
-              {{ $t('page.dashboard.help.addProds.title') }}
+              {{ $t("page.dashboard.help.addProds.title") }}
             </h5>
             <p class="text-sm text-bcGovColor-midGray">
-              {{ $t('page.dashboard.help.addProds.p1') }}
+              {{ $t("page.dashboard.help.addProds.p1") }}
             </p>
           </div>
         </UCard>
         <!-- eslint-disable-next-line max-len -->
-        <UCard class="relative cursor-pointer border-blue-500 shadow-none hover:shadow-md focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]">
+        <UCard
+          class="relative cursor-pointer border-blue-500 shadow-none hover:shadow-md focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]"
+        >
           <div class="flex flex-col gap-4">
             <h5 class="font-semibold text-bcGovColor-darkGray">
-              {{ $t('page.dashboard.help.productFees.title') }}
+              {{ $t("page.dashboard.help.productFees.title") }}
             </h5>
             <p class="text-sm text-bcGovColor-midGray">
-              {{ $t('page.dashboard.help.productFees.p1') }}
+              {{ $t("page.dashboard.help.productFees.p1") }}
             </p>
             <span>
               <NuxtLink
@@ -117,7 +129,7 @@ onMounted(async () => {
                 :to="localePath('/product-fees')"
                 target="_blank"
               >
-                {{ $t('page.dashboard.help.productFees.link') }}
+                {{ $t("page.dashboard.help.productFees.link") }}
               </NuxtLink>
               <span class="inline-flex align-middle">
                 <UIcon
@@ -129,13 +141,15 @@ onMounted(async () => {
           </div>
         </UCard>
         <!-- eslint-disable-next-line max-len -->
-        <UCard class="relative cursor-pointer border-blue-500 shadow-none hover:shadow-md focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]">
+        <UCard
+          class="relative cursor-pointer border-blue-500 shadow-none hover:shadow-md focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]"
+        >
           <div class="flex flex-col gap-4">
             <h5 class="font-semibold text-bcGovColor-darkGray">
-              {{ $t('page.dashboard.help.howToUse.title') }}
+              {{ $t("page.dashboard.help.howToUse.title") }}
             </h5>
             <p class="text-sm text-bcGovColor-midGray">
-              {{ $t('page.dashboard.help.howToUse.p1') }}
+              {{ $t("page.dashboard.help.howToUse.p1") }}
             </p>
             <span>
               <a
@@ -143,7 +157,7 @@ onMounted(async () => {
                 :href="helpHref"
                 target="_blank"
               >
-                {{ $t('page.dashboard.help.howToUse.link') }}
+                {{ $t("page.dashboard.help.howToUse.link") }}
               </a>
               <span class="inline-flex align-middle">
                 <UIcon
@@ -161,7 +175,7 @@ onMounted(async () => {
 
 <style scoped>
 a::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
