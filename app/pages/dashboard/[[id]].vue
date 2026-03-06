@@ -1,83 +1,84 @@
 <script setup lang="ts">
-const accountStore = useConnectAccountStore();
-const productInfo = useProductInfo();
-const { t } = useI18n();
-const localePath = useLocalePath();
-const { $authApi } = useNuxtApp();
-const { clearLoginRedirectUrl, setLogoutRedirectUrl, kcUser } = useKeycloak();
-const rtc = useRuntimeConfig().public;
+const accountStore = useConnectAccountStore()
+const productInfo = useProductInfo()
+const { t } = useI18n()
+const localePath = useLocalePath()
+const { $authApi } = useNuxtApp()
+const { clearLoginRedirectUrl, setLogoutRedirectUrl, kcUser } = useKeycloak()
+const rtc = useRuntimeConfig().public
 
-const route = useRoute();
+const route = useRoute()
 
 useHead({
-  title: t("page.dashboard.title"),
-});
+  title: t('page.dashboard.title')
+})
 
 definePageMeta({
-  middleware: ["auth", "dashboard-page"],
-});
+  middleware: ['auth', 'dashboard-page']
+})
 
-const isSbcStaff = ref(false);
-const helpHref =
-  "https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization-updates/bc-registry-resources";
+const isSbcStaff = ref(false)
+const helpHref
+  = 'https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/'
+    + 'permits-licences/news-updates/modernization-updates/bc-registry-resources'
 
 // Sync URL <-> accountStore.currentAccount.id
-const routeAccountId = Number(route.params.id);
+const routeAccountId = Number(route.params.id)
 if (
-  routeAccountId > 0 &&
-  Number.isFinite(routeAccountId) &&
-  routeAccountId !== accountStore.currentAccount.id
+  routeAccountId > 0
+  && Number.isFinite(routeAccountId)
+  && routeAccountId !== accountStore.currentAccount.id
 ) {
-  accountStore.switchCurrentAccount(routeAccountId);
+  accountStore.switchCurrentAccount(routeAccountId)
 }
 
 watch(
   () => accountStore.currentAccount.id,
   (newId) => {
     if (newId) {
-      window.history.replaceState({}, "", localePath(`/dashboard/${newId}`));
+      window.history.replaceState({}, '', localePath(`/dashboard/${newId}`))
     }
   },
-  { immediate: true },
-);
+  { immediate: true }
+)
 
 const {
   data: userProducts,
   status,
-  error,
+  error
 } = await useLazyAsyncData(
-  "user-products",
+  'user-products',
   () => productInfo.getActiveUserProducts(),
   {
     watch: [() => accountStore.currentAccount.id],
-    default: () => [],
-  },
-);
+    default: () => []
+  }
+)
 
 onMounted(async () => {
-  clearLoginRedirectUrl();
-  setLogoutRedirectUrl(rtc.baseUrl);
+  clearLoginRedirectUrl()
+  setLogoutRedirectUrl(rtc.baseUrl)
 
   setBreadcrumbs([
-    { to: localePath("/"), label: t("ConnectBreadcrumb.default") },
-    { label: t("page.dashboard.h1") },
-  ]);
+    { to: localePath('/'), label: t('ConnectBreadcrumb.default') },
+    { label: t('page.dashboard.h1') }
+  ])
 
   if (
-    accountStore.currentAccount.id &&
-    kcUser.value.roles.includes("gov_account_user")
+    accountStore.currentAccount.id
+    && kcUser.value.roles.includes('gov_account_user')
   ) {
     try {
-      const org = await $authApi(`/orgs/${accountStore.currentAccount.id}`);
-      if (org && typeof org === "object" && "branchName" in org) {
-        const branchName = org.branchName as string;
-        isSbcStaff.value = branchName.includes("Service BC");
+      const org = await $authApi(`/orgs/${accountStore.currentAccount.id}`)
+      if (org && typeof org === 'object' && 'branchName' in org) {
+        const branchName = org.branchName as string
+        isSbcStaff.value = branchName.includes('Service BC')
       }
     } catch {
-      isSbcStaff.value = false;
+      isSbcStaff.value = false
     }
   }
-});
+})
 </script>
 
 <template>
@@ -98,7 +99,11 @@ onMounted(async () => {
       />
     </h2>
     <div class="flex flex-col gap-6 lg:flex-row">
-      <DashboardProductCardList :user-products="userProducts" :error :status />
+      <DashboardProductCardList
+        :user-products="userProducts"
+        :error
+        :status
+      />
       <div class="space-y-6">
         <UCard
           class="pointer-events-none shadow-none lg:w-72 xl:w-96 2xl:w-[420px]"
@@ -112,9 +117,11 @@ onMounted(async () => {
             </p>
           </div>
         </UCard>
-        <!-- eslint-disable-next-line max-len -->
         <UCard
-          class="relative cursor-pointer border-blue-500 shadow-none hover:shadow-md focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]"
+          :class="[
+            'relative cursor-pointer border-blue-500 shadow-none hover:shadow-md',
+            'focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]'
+          ]"
         >
           <div class="flex flex-col gap-4">
             <h5 class="font-semibold text-bcGovColor-darkGray">
@@ -140,9 +147,11 @@ onMounted(async () => {
             </span>
           </div>
         </UCard>
-        <!-- eslint-disable-next-line max-len -->
         <UCard
-          class="relative cursor-pointer border-blue-500 shadow-none hover:shadow-md focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]"
+          :class="[
+            'relative cursor-pointer border-blue-500 shadow-none hover:shadow-md',
+            'focus-within:border-2 lg:w-72 xl:w-96 2xl:w-[420px]'
+          ]"
         >
           <div class="flex flex-col gap-4">
             <h5 class="font-semibold text-bcGovColor-darkGray">

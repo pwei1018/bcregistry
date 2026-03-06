@@ -56,16 +56,24 @@ const appVersions = computed<string[]>(() => {
         :aria-label="$t('ConnectFooter.navLabel')"
         class="flex grow"
       >
-        <ul class="list-none flex-col gap-1 p-0 sm:-ml-2 sm:flex-row sm:flex-wrap">
+        <ul
+          class="list-none flex-col gap-1 p-0 sm:-ml-2 sm:flex-row sm:flex-wrap"
+        >
           <li
             v-for="link in links"
             :key="link.to"
-            class="flex-col gap-2 border-r-0 pr-2 last:mr-0 last:border-r-0 sm:mr-2 sm:inline-block sm:flex-none sm:border-r sm:first:ml-2 border-blue-100"
+            :class="[
+              'flex-col gap-2 border-r-0 pr-2 last:mr-0 last:border-r-0 sm:mr-2',
+              'sm:inline-block sm:flex-none sm:border-r sm:first:ml-2 border-blue-100'
+            ]"
           >
             <NuxtLink
               :target="link.target"
               :to="link.to === '/' ? `/${$i18n.locale}` : link.to"
-              class="rounded p-1 text-sm text-white hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              :class="[
+                'rounded p-1 text-sm text-white hover:underline',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-white'
+              ]"
             >
               {{ $t(link.label) }}
             </NuxtLink>
@@ -73,7 +81,9 @@ const appVersions = computed<string[]>(() => {
         </ul>
       </nav>
       <div class="-mb-1 flex items-center">
-        <span class="italic text-bcGovColor-navDivider">{{ $t('ConnectFooter.bcApp') }}</span>
+        <span class="italic text-bcGovColor-navDivider">{{
+          $t("ConnectFooter.bcApp")
+        }}</span>
         <UTooltip
           :ui="{ content: 'h-fit' }"
           arrow
