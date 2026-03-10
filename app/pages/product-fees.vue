@@ -20,13 +20,14 @@ interface ProductFee {
   corpType: string
   corpTypeDescription: string
   fee: number | string
+  feeGst: number
   filingType: string
   productCode: string
   service: string
   serviceCharge: number
-  gst: number
-  total: number | string
-  variable: boolean
+  serviceChargeGst: number
+  total?: number | string
+  variable: boolean | null
   url?: string
 }
 
@@ -41,8 +42,9 @@ function groupAndTotalProducts(inputProducts: ProductFee[]): GroupedProductFee[]
     const {
       service,
       fee,
+      feeGst,
       serviceCharge,
-      gst,
+      serviceChargeGst,
       url,
       productCode,
       corpType,
@@ -50,7 +52,8 @@ function groupAndTotalProducts(inputProducts: ProductFee[]): GroupedProductFee[]
       filingType,
       variable
     } = currentItem
-    const total = typeof fee === 'string' ? fee : fee + serviceCharge + gst
+
+    const total = calculateTotal(fee, feeGst, serviceCharge, serviceChargeGst)
 
     let serviceString = corpTypeDescription + ' - ' + service
     if (variable) {
@@ -59,8 +62,9 @@ function groupAndTotalProducts(inputProducts: ProductFee[]): GroupedProductFee[]
     const productFee: ProductFee = {
       service: serviceString,
       fee,
+      feeGst,
       serviceCharge,
-      gst,
+      serviceChargeGst,
       total,
       url,
       filingType,
@@ -91,6 +95,9 @@ function groupAndTotalProducts(inputProducts: ProductFee[]): GroupedProductFee[]
 }
 
 const groupedProducts = computed(() => groupAndTotalProducts(productsRaw.value))
+
+const calculateTotal = (fee: number | string, feeGst: number, serviceCharge: number, serviceChargeGst: number) =>
+  typeof fee === 'string' ? fee : fee + feeGst + serviceCharge + serviceChargeGst
 
 const formatCurrency = (value: number | null | undefined) =>
   new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' })
@@ -123,24 +130,32 @@ const serviceColumns = [
   },
   {
     accessorKey: 'fee',
-    header: textHeader(t('page.productFees.table.header.fee'), 'right'),
+    header: textHeader(t('page.productFees.table.header.statutoryFee'), 'right'),
     cell: currencyCell('fee'),
     meta: {
       class: { td: 'w-[170px]' }
     }
   },
   {
+    accessorKey: 'feeGst',
+    header: textHeader(t('page.productFees.table.header.statutoryFeeGst'), 'right'),
+    cell: currencyCell('feeGst'),
+    meta: {
+      class: { td: 'w-[170px]' }
+    }
+  },
+  {
     accessorKey: 'serviceCharge',
-    header: textHeader(t('page.productFees.table.header.serviceCharge'), 'right'),
+    header: textHeader(t('page.productFees.table.header.serviceFee'), 'right'),
     cell: currencyCell('serviceCharge'),
     meta: {
       class: { td: 'w-[170px]' }
     }
   },
   {
-    accessorKey: 'gst',
-    header: textHeader(t('page.productFees.table.header.gst'), 'right'),
-    cell: currencyCell('gst'),
+    accessorKey: 'serviceChargeGst',
+    header: textHeader(t('page.productFees.table.header.serviceFeeGst'), 'right'),
+    cell: currencyCell('serviceChargeGst'),
     meta: {
       class: { td: 'w-[170px]' }
     }
