@@ -25,7 +25,7 @@ Startup the development environment.
 pnpm run dev
 ```
 
-`pnpm install` also sets up [Lefthook](https://github.com/evilmartians/lefthook) pre-commit hooks (lint + [gitleaks](https://github.com/gitleaks/gitleaks) secret scanning) - no extra setup needed. If a commit is blocked by a false-positive secret match, add an allowlist entry to `.gitleaks.toml` rather than committing with `--no-verify`.
+`pnpm install` also sets up [Lefthook](https://github.com/evilmartians/lefthook) pre-commit hooks ([gitleaks](https://github.com/gitleaks/gitleaks) secret scanning) - no extra setup needed. If a commit is blocked by a false-positive secret match, add an allowlist entry to `.gitleaks.toml` rather than committing with `--no-verify`. The gitleaks rules are shared from [bcgov/bcregistry-sre](https://github.com/bcgov/bcregistry-sre/tree/main/git-hooks) and refresh automatically; on Windows run `git config --global core.longpaths true` once first.
 
 ## Build and Preview
 
